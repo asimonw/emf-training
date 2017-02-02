@@ -42,7 +42,33 @@ var saySomething = function (message) {
 ```
 ### Scope
 
-Coming soon...
+Variables are function scoped, not block scoped. For instance, this will log `7` to the console:
+
+```javascript
+if (true) {
+  var x = 7;
+}
+console.log(x);
+```
+
+Note that even the `if` clause is false, the variable `x` will get hoisted to the top, outside of the if block, exactly because blocks don't influence scope. (At least when using the `var` keyword to declare a variable. We'll talk about ES2015 later.)
+
+This example illustrates the basics of function scoping:
+
+```javascript
+var x = 3;
+function hideApples() {
+  var x = 7;
+  var apples = 5;
+  console.log(x); // 7 (shadows global x)
+  console.log(apples); // 5
+}
+hideApples();
+console.log(x); // 3 (global x again)
+console.log(apples) // ReferenceError (apples cannot be accessed in global scope)
+```
+
+This means that functions are a perfect **encapsulation** or **information hiding** mechanism.
 
 ### Closures
 
