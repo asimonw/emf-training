@@ -1,4 +1,4 @@
-## Quick JS facts
+## Quick JS tutorial
 
 ### Running node
 
@@ -186,5 +186,48 @@ jQuery.noConflict(); // don't alias jQuery with $
 ```
 
 ### The module pattern
+
+The above ideas can be combined into what is called the module pattern. As an example, let's say we'd like to implement a simple event emitter module. All a user of our module needs to know is how to trigger an event, and how to listen for emitted events and associate handlers to them. The data structure used to map events to event handlers and how it's updated and accessed, are implementation details which shouldn't concern the user and are actually better kept private.
+
+```javascript
+var Event = (function () {
+  var handlers = {}; // private "property" to manage handlers
+
+  function onEvent(name, fn) {
+    if (!(name in handlers)) {
+      handlers[name] = [fn];
+    } else {
+      handlers[name].push(fn);
+    }
+  }
+
+  function onTrigger(name) {
+    if (name in handlers) {
+      handlers[name].forEach(function (handler) { handler(); });
+    }
+  }
+
+  // interface
+  return {
+    on: onEvent,
+    trigger: onTrigger
+  };
+})();
+```
+
+This is called the revealing module pattern (there are other variations on the module pattern out there) because the interface is explicitly returned from the IIFE as an object with the necessary methods as properties. This means that the `Event` variable now points to an object and effectively acts as a namespace for the functionality exposed by the module. Here's how you'd use it:
+
+```javascript
+Event.on('click', function () { console.log('clicked!') });
+Event.on('click', function () { console.log('clicked again!') });
+Event.on('scroll', function () { console.log('scrolled!') });
+
+Event.trigger('click');
+Event.trigger('scroll');
+```
+
+Note that this is not a full-blown implementation of an event system (no way to cancel events, trigger events only once, etc), but it gives you an idea. What's important here is that the `handlers` object cannot be accessed outside of the module block. It's up to the implementer of the event emitter to deal with the implementation details, not the user of the interface. This allows implementation details to change without impacting the users as long as the API (function methods, parameter lists, return values, semantics) doesn't change.
+
+### CommonJS modules
 
 Coming soon...
