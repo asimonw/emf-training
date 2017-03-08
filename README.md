@@ -51,7 +51,7 @@ if (true) {
 console.log(x);
 ```
 
-Note that even the `if` clause is false, the variable `x` will get hoisted to the top, outside of the if block, exactly because blocks don't influence scope. (At least when using the `var` keyword to declare a variable. We'll talk about ES2015 later. Another important exception is try/catch blocks.)
+Note that even the `if` clause is false, the variable `x` will get hoisted to the top, outside of the if block, exactly because blocks don't influence scope. (At least when using the `var` keyword to declare a variable. We'll talk about ES2015 later. Another important exception is catch blocks in try/catch statements.)
 
 This example illustrates the basics of function scoping:
 
