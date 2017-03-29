@@ -1,19 +1,19 @@
-const http = require('http');
+const express = require('express');
 
-var user = require('./user');
-var view = require('./view');
+var User = require('./user');
+// var view = require('./view');
 
-var server = http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  if (req.url === '/') {
-    res.write('<h1>Hello node</h1>');
-    res.end(view(user));
-  } else if (req.url === '/about') {
-    res.write('<h1>About</h1>');
-    res.end();
-  }
+var app = express();
+
+app.get('/users', function (req, res) {
+  res.send(User.find());
 });
 
-server.listen(3000, function () {
+app.get('/users/:id', function (req, res) {
+  var id = req.params.id;
+  res.send('Hi ' + id);
+});
+
+app.listen(3000, function () {
   console.log('Server up at port 3000');
 });
