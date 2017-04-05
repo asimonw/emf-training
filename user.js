@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 var users = [
   {
     id: 1,
@@ -13,4 +15,8 @@ var users = [
 
 exports.find = function () {
   return users;
+};
+
+exports.findById = function (id) {
+  return _.find(users, { id: id });
 };

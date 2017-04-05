@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/asimonw/emf-training#readme",
   "dependencies": {
-    "express": "^4.15.2"
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "lodash": "^4.17.4"
   }
 }
