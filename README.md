@@ -230,4 +230,65 @@ Note that this is not a full-blown implementation of an event system (no way to 
 
 ### CommonJS modules
 
+These days, rather than using the above patterns to create modules, people often use the CommonJS specification (we'll talk about ES2015 modules later). This is the way Node.js deals with modules and it can also be used to organise client-side JavaScript by using bundlers such as Browserify.
+
+As a very simple (and overly simplistic) example, let's say that we have an app which uses two modules, one which provides a user object and one which provides a "view" function to log the user to the console. (In a more realistic example, this could be a user model which pulls data from a database and a rendering function which displays the user data in the browser.)
+
+The app would `require` the functionality provided by the modules as follows:
+```javascript
+// app.js
+
+var user = require('./user');
+var view = require('.view');
+
+view(user);
+```
+This assumes that there are two files `user.js` and `view.js` in the same folder as `app.js`. (Node.js knows to look for `.js` files, so writing the extension is optional.) The respective files would then use `module.exports` to "export" an object or function to be used in other modules. For example, this is how `user.js` exports an object:
+```javascript
+// user.js
+
+module.exports = {
+  name: 'John',
+  email: 'john@example.com'
+};
+```
+Of course, often a lot more would be going on in a module, but `module.exports` gathers all the data and methods which will be accessible to other modules `require`ing the given module. In a similar fashion, `view.js` exports a function to be used in `app.js`:
+```javascript
+// view.js
+
+module.exports = function (user) {
+  console.log('Name: ' + user.name + ', Email: ' + user.email);
+};
+```
+There's another way to export things from a CommonJS module, but this is the most euhm... common way, so we'll stick to this for now.
+
+### Objects
+
+We've already been using objects, but let's look into them a bit more systematically now. The simplest way to create an object is by using the literal syntax:
+```javascript
+var obj = {};
+var user = {
+  name: 'John',
+  email: 'john@example.com'
+};
+```
+This creates an empty object `obj` and an object `user` with properties `name` and `email`, respectively. Creating an empty object can also be done by invoking the `Object` function as a "constructor". (That's between quotes because, really, this only superficially mimics the way objects are created from classes in class-based object-oriented languages. JavaScript does not have classes; more on that later.) So, the first line above could have been written as:
+```javascript
+var obj = new Object();
+```
+And `user` could be created as follows:
+```javascript
+var user = new Object();
+user.name = 'John';
+user['email'] = 'john@example.com';
+```
+As you can see, properties can be added "dynamically" after the object has been created. And they can be accessed by either using the `.` operator (reminiscent of a lot of OOP languages) or by treating properties as keys in a hash table, using `[]`. Both approaches are equivalent when the key is a valid JavaScript identifier, but using `[]` is more flexible, allowing keys to be any string of characters, e.g. including spaces or dashes. For instance, `user['some weird-key']` would be totally valid. This also allows keys to be programmatically defined, which is often very useful:
+```javascript
+var country = 'UK';
+var countryCode = countryCodeTable[country];
+```
+Note that any object created this way "inherits" functionality from the prototype of `Object`, such as a default `toString` method. How this works and how this relates to other ways to create objects using custom "constructor" functions or `Object.create` will be discussed below.
+
+### `this` might be confusing
+
 Coming soon...
