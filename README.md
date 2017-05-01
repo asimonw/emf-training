@@ -291,4 +291,39 @@ Note that any object created this way "inherits" functionality from the prototyp
 
 ### `this` might be confusing
 
+Before getting into prototypes and property delegation, it's useful to know how `this` works in JavaScript. The key thing to know about `this` binding is that it is not established when the function is defined, but through what is called its call-site when the function gets called.
+
+There are essentially four distinct ways in which `this` can be bound to an object.
+
+#### Default binding
+
+If a function gets called without specifying a call-site, `this` defaults to the global object (`window` in the browser or `global` in Node) or `undefined` in strict mode. For instance, in Node:
+```javascript
+function foo() {
+  console.log(this.a);
+}
+global.a = 0;
+foo(); // 0
+```
+Notice that I set the property `a` on `global` explicitly, because just writing `var a = 41` doesn't actually create a global property, but a variable which is scoped to the CommonJS module. (Node essentially wraps the content of every file in a function call.)
+
+#### Implicit binding
+
+If we now use the exact same function, but call it "on an object" (a bit like a method call in some other languages), that object will become the call-site. That shows that `this` is indeed not determined by how the function is defined.
+```javascript
+var o1 = {
+  a: 1,
+  foo: foo
+}
+o1.foo(); // 1
+```
+Note that we need to add a property to `o1` which references the function `foo` in order to make this work. In this example, we say that `this` is implicitly bound to `o1` because of the way `foo` is called. To illustrate this point, this wouldn't have the same effect:
+```javascript
+var bar = o1.foo;
+bar(); // 0
+```
+`bar` is a reference to the same function in memory as pointed to by the original `foo`. Since `bar` is not called with a specified call-site, it reverts to the default binding, the global object (or undefined). This is typically what leads to unexpected results in expressions like `setTimeout(o1.foo)`. Two ways around this are by either explicitly setting `this` in the calling function (similarly to how jQuery would bind `this` to the DOM element which triggered the event in an event handler) or by using the built in `bind` function which is defined on `Function.prototype`.
+
+### Prototypes
+
 Coming soon...
