@@ -6,6 +6,7 @@ This repo consist of two parts. The app itself, which demonstrates some modern t
 
 The app will be using (at least)
 * Express
+* MongoDB
 * Vue
 * Gulp
 * Browserify
