@@ -160,7 +160,71 @@ This is reminiscent of the way inheritance works in classical OOP languages, but
 
 ### More on delegation
 
-Coming soon...
+The way `User`s were defined above, the magical `new` operator took care of setting `u1`'s prototype to `User.prototype` and the latter's prototype to `Object.prototype`. But what if we want to set the prototype ourselves rather than simply defaulting to `Object.prototype`. What if we want to *extend* the prototype chain?
+
+Say we want to create a special kind of `User` with extra permissions, called `Admin`. Let's simplify the `User` objects a bit:
+```javascript
+function User(name) {
+  this.name = name;
+}
+User.prototype.getName = function () {
+  return this.name;
+}
+```
+And define a new "constructor" which "extends" `User`:
+```javascript
+function Admin(name, permissions) {
+  User.call(this, name);
+  this.permissions = permissions
+}
+```
+Note that we use `Function.prototype.call` to use the `User` function to set the `name` property on the object that would be created by the `new` operator. If we were to use `new` on `Admin`, the prototype of `Admin.prototype` would be `Object.prototype`, which is not what we want. So what we do is simply override that by setting:
+```javascript
+Admin.prototype = Object.create(User.prototype);
+```
+We've mentioned `Object.create` previously, and it does exactly what we want. It creates a new object and sets its prototype to object handed to it as its first argument (so it basically does the parts of `new` that don't involve `this`, which is refreshingly straight forward). So after this assignment `Admin.prototype` is an object with `User.prototype` as its prototype.
+
+We can now define more properties on `Admin.prototype` which can be used by admin objects without interfering with "normal users".
+```javascript
+Admin.prototype.getPermissions = function () {
+  return this.permissions;
+}
+```
+Admin objects can now make use of functions on both prototypes:
+```javascript
+var admin = new Admin('B-dog', 'all');
+console.log(admin.getName()); // B-dog
+console.log(admin.getPermissions()); // all
+```
+Note that the delegations going on are `admin` &rarr; `Admin.prototype` for `getPermissions` and `admin` &rarr; `Admin.prototype` &rarr; `User.prototype` for `getName`.
+
+Does all this sound like a lot of work just to get the usual 'classical' object-oriented behavior to work? That's because we're trying to shoehorn prototypes into something most of us are more familiar with. But if we just forget about classical OO for a bit, working with prototypes is quite straightforward.
+
+Let's say we have an object which collects some functions we'd like to reuse in other objects (the main reason why people would use inheritance):
+```javascript
+var user = {
+  getName: function () { return this.name; }
+};
+```
+To create an object which uses `user` as prototype instead of `Object.prototype`, simply do the following:
+```javascript
+var u1 = Object.create(user);
+u1.name = 'Stanley';
+u1.getName(); // Stanley
+```
+It couldn't be any simpler. `Object.create(user)` creates a new object with `user` as its prototype, nothing more, nothing less. The new object can then delegate to all the properties of `user`.
+
+If you don't like that extra step needed to set the `name` property, create yourself a nice factory function:
+```javascript
+var userFactory = function (name) {
+  var newObject = Object.create(u);
+  newObject.name = name;
+  return newObject;
+};
+
+var u2 = userFactory('Jane');
+u2.getName(); // Jane
+```
 
 ### Enumeration
 
