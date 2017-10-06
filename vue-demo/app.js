@@ -7,12 +7,14 @@ new Vue({
       {
         title: 'Report',
         summary: 'Some good insights.',
-        showSummary: false
+        showSummary: false,
+        editMode: false
       },
       {
         title: 'Case Study',
         summary: 'A concrete example.',
-        showSummary: false
+        showSummary: false,
+        editMode: false
       }
     ]
   },
@@ -23,6 +25,9 @@ new Vue({
         if (otherDoc.showSummary) otherDoc.showSummary = false;
       })
       doc.showSummary = !currentState;
+    },
+    editSummary: function (doc) {
+      doc.editMode = !doc.editMode;
     }
   }
 });

@@ -10,8 +10,14 @@
       <h1>{{ title }}</h1>
       <ul>
         <li v-for="doc in content">
-          <h2 @click="toggleSummary(doc)">{{ doc.title }}</h2>
-          <section v-show="doc.showSummary">
+          <h2 @click="toggleSummary(doc)">
+            {{ doc.title }}
+            <button @click.stop="editSummary(doc)">Edit</button>
+          </h2>
+          <section v-if="doc.editMode">
+            <input type="text" :value="doc.summary">
+          </section>
+          <section v-else v-show="doc.showSummary">
             {{ doc.summary }}
           </section>
         </li>
