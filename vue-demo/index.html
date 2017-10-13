@@ -9,19 +9,24 @@
     <div id="app">
       <h1>{{ title }}</h1>
       <ul>
-        <li v-for="doc in content">
+        <li v-for="(doc, index) in content">
           <h2 @click="toggleSummary(doc)">
             {{ doc.title }}
-            <button @click.stop="editSummary(doc)">Edit</button>
+            <button @click.stop="editSummary(doc, index)">Edit</button>
           </h2>
           <section v-if="doc.editMode">
-            <input type="text" :value="doc.summary">
+            <input type="text" :value="doc.summary"
+              @keyup.enter="addSummary(doc, $event)">
           </section>
           <section v-else v-show="doc.showSummary">
             {{ doc.summary }}
           </section>
         </li>
       </ul>
+      <div>
+        Add new <input type="text" @keyup.enter="addDoc"
+                  ref="input">
+      </div>
       <a :href="url">More inspiration</a>
     </div>
     <script src="app.js"></script>

@@ -26,8 +26,23 @@ new Vue({
       })
       doc.showSummary = !currentState;
     },
-    editSummary: function (doc) {
+    editSummary: function (doc, index) {
       doc.editMode = !doc.editMode;
+      // console.log(this.$refs.input);
+    },
+    addSummary: function (doc, event) {
+      doc.summary = event.target.value;
+      doc.editMode = false;
+      doc.showSummary = true;
+    },
+    addDoc: function (event) {
+      this.content.push({
+        title: event.target.value,
+        summary: '',
+        showSummary: false,
+        editMode: true
+      });
+      this.$refs.input.value = '';
     }
   }
 });
