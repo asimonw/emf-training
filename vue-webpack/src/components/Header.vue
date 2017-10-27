@@ -6,7 +6,9 @@
 
 <script>
 export default {
-  props: ['name'],
+  props: {
+    name: String
+  },
   data() {
     return {
 
@@ -17,6 +19,6 @@ export default {
 
 <style scoped>
 div {
-  border: 1px solid black;
+  color: #123456;
 }
 </style>
