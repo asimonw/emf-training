@@ -1,7 +1,13 @@
 <template>
   <li>
-    <h2 @click="toggle">{{ title }}</h2>
-    <section v-show="show">{{ summary }}</section>
+    <h2 @click="toggleShow">
+      {{ title }}
+      <button @click.stop="toggleEdit">Edit</button>
+    </h2>
+    <section v-if="edit">
+      <input type="text" :value="summary" @change="editSummary">
+    </section>
+    <section v-else v-show="show">{{ summary }}</section>
   </li>
 </template>
 
@@ -10,7 +16,9 @@ export default {
   props: {
     title: String,
     summary: String,
-    show: Boolean
+    show: Boolean,
+    edit: Boolean,
+    toggleShow: Function
   },
   data() {
     return {
@@ -18,8 +26,11 @@ export default {
     }
   },
   methods: {
-    toggle() {
-      this.$emit('batman', !this.show);
+    toggleEdit() {
+      this.$emit('toggleEdit', !this.edit);
+    },
+    editSummary(event) {
+      this.$emit('edit', event.target.value)
     }
   }
 }

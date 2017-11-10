@@ -7,15 +7,20 @@
           :title="asset.title"
           :summary="asset.summary"
           :show="asset.showSummary"
-          @batman="asset.showSummary = $event">
+          :edit="asset.editMode"
+          :toggleShow="toggleSummary.bind(null, asset)"
+          @toggleEdit="asset.editMode = $event"
+          @edit="editSummary(asset, $event)">
       </app-asset>
     </ul>
+    <app-add-new></app-add-new>
   </div>
 </template>
 
 <script>
 import Header from './components/Header.vue';
 import Asset from './components/Asset.vue';
+import AddNew from './components/AddNew.vue';
 
 export default {
   data() {
@@ -39,9 +44,23 @@ export default {
       ]
     }
   },
+  methods: {
+    toggleSummary(doc) {
+      let currentState = doc.showSummary;
+      this.content.forEach(function (otherDoc) {
+        if (otherDoc.showSummary) otherDoc.showSummary = false;
+      })
+      doc.showSummary = !currentState;
+    },
+    editSummary(doc, event) {
+      doc.summary = event;
+      doc.editMode = false;
+    }
+  },
   components: {
     appHeader: Header,
-    appAsset: Asset
+    appAsset: Asset,
+    appAddNew: AddNew
   }
 }
 </script>
